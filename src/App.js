@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Auth } from "./pages/auth/index";
-import { Questionaire } from "./pages/workout-tracker/index";
+import Questionaire from "./pages/workout-tracker/index";
 
 function App() {
   return (
