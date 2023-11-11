@@ -18,11 +18,11 @@ export const Auth = () => {
       isAuth: true,
     };
     localStorage.setItem("auth", JSON.stringify(authInfo));
-    navigate("/expense-tracker");
+    navigate("/workout-tracker");
   };
 
   if (isAuth) {
-    return <Navigate to="/expense-tracker" />;
+    return <Navigate to="/workout-tracker" />;
   }
 
   return (
