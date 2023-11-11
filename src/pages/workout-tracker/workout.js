@@ -28,7 +28,19 @@ async function callOpenAI(prompt) {
 }
 
 // Example prompt
-const examplePrompt = 'Once upon a time, in a land far, far away...';
+const form = document.getElementById('questionaire-container');
+let createPrompt = (event) =>{
+    let weight = document.getElementById('Weight').value;
+    let height = document.getElementById('Height').value;
+    let currentActivityLevel = document.getElementById('Current-Activity-Level').value;
+    let fitnessGoal = document.getElementById('Fitness-Goal').value;
+    let medical = document.getElementById('Medical').value;
+    let prompt = "Create a weekly workout plan based on the following information: \nWeight: "+weight+" pounds\nHeight: "+height+" inches\nCurrent Activity Level: "+currentActivityLevel+"\nFitness Goal: "+fitnessGoal+"\nPre-existing Medical Conditions: "+medical;
+    event.preventDefault();
+    console.log(prompt);
+}
+
+form.addEventListener("Submit", callOpenAI(createPrompt));
 
 // Make the API call
-callOpenAI(examplePrompt);
+//callOpenAI(examplePrompt);

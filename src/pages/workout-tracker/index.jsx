@@ -45,10 +45,13 @@ export const Questionaire = () =>{
             <label htmlFor="Weight">Weight (lbs)</label>
             <input type = "text" id = "Weight" required></input>
             <label htmlFor="Height">Height (in)</label>
-            <label htmlFor="Current-Activity-Level"></label>
+            <input type = "text" id = "Weight" required></input>
+            <label htmlFor="Current-Activity-Level">Current Activity Level</label>
             <input type = "text" id = "Current-Activity-Level" required></input>
             <label htmlFor="Fitness-Goal">Fitness Goal</label>
             <input type = "text" id = "Fitness-Goal" required></input>
+            <label htmlFor="Fitness-Goal">Medical Conditions/Injuries</label>
+            <input type = "text" id = "Medical" required></input>
             <input type="Submit"></input>
         </form>
         </div>
