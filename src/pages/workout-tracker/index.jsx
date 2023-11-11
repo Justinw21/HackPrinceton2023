@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 import { signOut } from "firebase/auth";
 import axios from "axios";
+import TextField from "@mui/material/TextField";
 import "./style.css";
 
 const Questionaire = () => {
@@ -14,11 +15,27 @@ const Questionaire = () => {
   const [currentActivityLevel, setCurrentActivityLevel] = useState("");
   const [fitnessGoal, setFitnessGoal] = useState("");
   const [medicalConditions, setMedicalConditions] = useState("");
-
+  const [weightError, setWeightError] = useState(false);
+  const [heightError, setHeightError] = useState(false);
+  
   const { name, profilePhoto } = useGetUserInfo();
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
+  };
+
+  const handleWeightChange = (event) => {
+    const inputValueW = event.target.value;
+    const isValidInputW = /^\d+$/.test(inputValueW) && inputValueW >= 0 && inputValueW <= 1000;
+    setWeight(inputValueW);
+    setWeightError(!isValidInputW);
+  };
+
+  const handleHeightChange = (event) => {
+    const inputValueH = event.target.value;
+    const isValidInputH = /^\d+$/.test(inputValueH) && inputValueH >= 12 && inputValueH <= 120;
+    setHeight(inputValueH);
+    setHeightError(!isValidInputH);
   };
 
   const signUserOut = async () => {
@@ -52,30 +69,43 @@ const Questionaire = () => {
 
   const callOpenAI = async (prompt) => {
     try {
-        const openaiEndpoint = 'https://api.openai.com/v1/engines/davinci/completions';
-        const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY; // Replace with your actual API key
-
-        const response = await axios.post(
-            openaiEndpoint,
+      const openaiEndpoint = "https://api.openai.com/v1/chat/completions";
+      const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY; // Replace with your actual API key
+  
+      const response = await axios.post(
+        openaiEndpoint,
+        {
+          model: 'gpt-3.5-turbo',
+  
+          messages: [
             {
-                prompt: prompt,
-                max_tokens: 150 // Adjust as needed
+              role: 'system',
+              content: 'You are a personal trainer.',
             },
             {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${openaiApiKey}`
-                }
-            }
-        );
-        const workout = response.data.choices[0].text.trim();
-        console.log(`Workout:`);
-        console.log(workout);
+              role: 'user',
+              content: prompt,
+            },
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openaiApiKey}`,
+          },
+        }
+      );
+  
+      const workout = response.data.choices[0].message.content.trim();
+      console.log(`Workout:`);
+      console.log(workout);
     } catch (error) {
-        console.error('Error calling OpenAI:', error.response ? error.response.data : error.message);
+      console.error(
+        "Error calling OpenAI:",
+        error.response ? error.response.data : error.message
+      );
     }
-};
-
+  };
 
   return (
     <>
@@ -105,20 +135,32 @@ const Questionaire = () => {
             <option value="female">Female</option>
           </select>
           <label htmlFor="Weight">Weight (lbs)</label>
-          <input
+          <TextField
             type="text"
             id="Weight"
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            onChange={handleWeightChange}
             required
+            error={weightError}
+            helperText={
+              weightError
+                ? "Enter between 0 and 1000"
+                : ""
+            }
           />
           <label htmlFor="Height">Height (in)</label>
-          <input
+          <TextField
             type="text"
             id="Height"
             value={height}
-            onChange={(e) => setHeight(e.target.value)}
+            onChange={handleHeightChange}
             required
+            error={heightError}
+            helperText={
+                heightError
+                ? "Enter between 12 and 120"
+                : ""
+            }
           />
           <label htmlFor="Current-Activity-Level">Current Activity Level</label>
           <input
