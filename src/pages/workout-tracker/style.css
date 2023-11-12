@@ -1,10 +1,32 @@
-.profile {
+.top-bar {
     display: flex;
     flex-direction:row;
     align-items:center;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 10px;
-    background-color: rgb(255, 132, 17)
+    background: rgb(255,115,0);
+    background: linear-gradient(90deg, rgba(255,115,0,1) 0%, rgba(248,248,209,1) 100%);
+}  
+
+.top-bar img {
+    width: 75px;
+    display: flex;
+    flex-direction:row;
+    align-items:flex-start;
+}  
+
+.profile {
+    display: flex;
+    flex-direction:row-reverse;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 50px;
+}
+
+.profile-photo{
+    width: 75px;
+    border-radius: 50%;
+    padding: 0px 10px;
 }
 
 /*.profile {
