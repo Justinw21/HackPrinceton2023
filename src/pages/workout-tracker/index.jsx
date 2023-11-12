@@ -127,7 +127,8 @@ const Questionaire = () => {
         "\nFitness Goal: " +
         fitnessGoal +
         "\nPre-existing Medical Conditions: " +
-        medicalInjury;
+        medicalInjury +
+        "\nSeparate the exercises by the character '-', no numbers"
       console.log(prompt);
   
       // Make the API call
@@ -189,25 +190,30 @@ const Questionaire = () => {
 
     let series = result.split("\n\n");
     for(let i = 0; i<series.length; i++){
-      series[i].split("-");
+      series[i]=series[i].split("- ");
     }
     //now series should contain the days and workouts
     var days = document.createElement('ul');
     days.classList.add('workout-list');
+    days.style.display = 'flex'; // Set display property to 'flex'
+    days.style.flexDirection= 'column'; // Allow items to wrap to the next line
     selected_div.appendChild(days);
     
     for(let j = 0; j < series.length; j++){
       var each_day= document.createElement('li');
-      each_day.textContent= series[j];
-      console.log(series[j]);
+      each_day.textContent= series[j][0];
       selected_div.appendChild(each_day);
-      /*
       for(let k = 1; k < series[j].length; k++){
+        console.log(series[j][k]);
+        var label = document.createElement('label');
+        label.textContent = series[j][k] + "\n";
         var each_exercise = document.createElement('input');
         each_exercise.type = 'checkbox';
-        each_exercise.textContent = series[j][k];
         selected_div.appendChild(each_exercise);
-      }*/
+        selected_div.appendChild(label);
+        selected_div.appendChild(document.createElement('br'));
+      }
+      
     }
   };
 
@@ -320,7 +326,6 @@ const Questionaire = () => {
       </div>
       <div className="results">
         <h3>Result:</h3>
-        <p>{result}</p>
       </div>
     </>
   );
