@@ -188,6 +188,10 @@ const Questionaire = () => {
     result.split(" - ");*/
     let selected_div = document.querySelector('.results');
 
+    var heading = document.createElement('h3');
+    heading.textContent = "Result:\n";
+    selected_div.appendChild(heading);
+
     let series = result.split("\n\n");
     for(let i = 0; i<series.length; i++){
       series[i]=series[i].split("- ");
@@ -195,12 +199,12 @@ const Questionaire = () => {
     //now series should contain the days and workouts
     var days = document.createElement('ul');
     days.classList.add('workout-list');
-    days.style.display = 'flex'; // Set display property to 'flex'
-    days.style.flexDirection= 'column'; // Allow items to wrap to the next line
+   
     selected_div.appendChild(days);
     
     for(let j = 0; j < series.length; j++){
       var each_day= document.createElement('li');
+      each_day.style.listStyleType = 'none';
       each_day.textContent= series[j][0];
       selected_div.appendChild(each_day);
       for(let k = 1; k < series[j].length; k++){
@@ -213,7 +217,7 @@ const Questionaire = () => {
         selected_div.appendChild(label);
         selected_div.appendChild(document.createElement('br'));
       }
-      
+      selected_div.appendChild(document.createElement('br'));
     }
   };
 
@@ -222,13 +226,13 @@ const Questionaire = () => {
       <div className="questionaire-page">
         <div className="profile">
           <img className="profile-photo" src={profilePhoto} alt="Profile" />
-          <p>{name}</p>
+          <p>Welcome, {name}!</p>
           <Button variant="contained" onClick={signUserOut}>
           Sign Out
 </Button>
         </div>
-
         <form className="questionaire-container" onSubmit={createPrompt}>
+          <h1>Please Fill out the Form Below</h1>
           <InputLabel id="Gender">Gender</InputLabel>
           <FormControl sx={{ m: 0, minWidth: 215 }} size="small" error>
             <Select
@@ -324,8 +328,10 @@ const Questionaire = () => {
 </Button>
         </form>
       </div>
+      <div className="res-cont">
       <div className="results">
-        <h3>Result:</h3>
+        
+      </div>
       </div>
     </>
   );
