@@ -8,38 +8,39 @@ import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
 import Select from "@mui/material/Select";
+import Button from '@mui/material/Button';
 import "./style.css";
 
 const Questionaire = () => {
   const navigate = useNavigate();
   //variables for the categories and their error messages
-  const [selectedOption, setSelectedOption] = useState("");
+  const [gender, setGender] = useState("");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
   const [fitnessGoal, setFitnessGoal] = useState("");
-  const [medicalConditions, setMedicalConditions] = useState("");
+  const [medicalInjury, setMedicalInjury] = useState("");
+  const [genderError, setGenderError] = useState(false);
   const [weightError, setWeightError] = useState(false);
   const [heightError, setHeightError] = useState(false);
   const [activityLevelError, setWorkoutFreqError] = useState(false);
+  const [goalError, setGoalError] = useState(false);
+  const [medInjuryError, setMedInjuryError] = useState(false);
 
   //output
   const [result, setResult] = useState("");
 
+  //output
   const { name, profilePhoto } = useGetUserInfo();
-
-  const handleChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
 
   const handleWeightChange = (event) => {
     const inputValueW = event.target.value;
     const isValidInputW =
-      /^\d+$/.test(inputValueW) && inputValueW >= 0 && inputValueW <= 1000;
-    setWeight(inputValueW);
-    setWeightError(!isValidInputW);
+    /^\d+$/.test(inputValueW) && inputValueW >= 0 && inputValueW <= 1000;
+  setWeight(inputValueW);
+  setWeightError(!isValidInputW);
+
   };
 
   const handleHeightChange = (event) => {
@@ -48,13 +49,34 @@ const Questionaire = () => {
       /^\d+$/.test(inputValueH) && inputValueH >= 12 && inputValueH <= 120;
     setHeight(inputValueH);
     setHeightError(!isValidInputH);
+    
   };
 
   const handleActivityLevelChange = (event) => {
     const inputValueWF = event.target.value;
-    const isValidInputWF = /^\d+$/.test(inputValueWF) && inputValueWF !== ""; // Check if the input is a non-empty string of digits
+
     setActivityLevel(inputValueWF);
-    setWorkoutFreqError(!isValidInputWF);
+
+  };
+
+  const handleGenderChange = (event) => {
+    const inputValueG = event.target.value;
+
+    setGender(inputValueG);
+
+  };
+
+  const handleFitnessGoalChange = (event) => {
+    const inputValueGoal = event.target.value;
+
+    setFitnessGoal(inputValueGoal);
+
+  };
+
+  const handleMedicalInjuriesChange = (event) => {
+    const inputValueMed = event.target.value;
+    setMedicalInjury(inputValueMed);
+
   };
 
   const signUserOut = async () => {
@@ -69,22 +91,50 @@ const Questionaire = () => {
 
   const createPrompt = (event) => {
     event.preventDefault();
-    const prompt =
-      "Create a weekly exercise plan based on the following information: \nWeight: " +
-      weight +
-      " pounds\nHeight: " +
-      height +
-      " inches\nCurrent Activity Level: " +
-      activityLevel +
-      "\nFitness Goal: " +
-      fitnessGoal +
-      "\nPre-existing Medical Conditions: " +
-      medicalConditions;
-    console.log(prompt);
-
-    // Make the API call
-    callOpenAI(prompt);
+  
+    // Check if all required fields have valid inputs
+    const isGenderValid = gender !== "";
+    const isWeightValid = /^\d+$/.test(weight) && weight >= 0 && weight <= 1000;
+    const isHeightValid = /^\d+$/.test(height) && height >= 12 && height <= 120;
+    const isActivityLevelValid = activityLevel !== "";
+    const isFitnessGoalValid = fitnessGoal !== "";
+    const isMedicalInjuryValid = medicalInjury !== "";
+  
+    // Update error states
+    setGenderError(!isGenderValid);
+    setWeightError(!isWeightValid);
+    setHeightError(!isHeightValid);
+    setWorkoutFreqError(!isActivityLevelValid);
+    setGoalError(!isFitnessGoalValid);
+    setMedInjuryError(!isMedicalInjuryValid);
+  
+    // If all fields are valid, make the API call
+    if (
+      isGenderValid &&
+      isWeightValid &&
+      isHeightValid &&
+      isActivityLevelValid &&
+      isFitnessGoalValid &&
+      isMedicalInjuryValid
+    ) {
+      const prompt =
+        "Create a weekly exercise plan based on the following information: \nWeight: " +
+        weight +
+        " pounds\nHeight: " +
+        height +
+        " inches\nCurrent Activity Level: " +
+        activityLevel +
+        "\nFitness Goal: " +
+        fitnessGoal +
+        "\nPre-existing Medical Conditions: " +
+        medicalInjury;
+      console.log(prompt);
+  
+      // Make the API call
+      callOpenAI(prompt);
+    }
   };
+  
 
   const callOpenAI = async (prompt) => {
     try {
@@ -132,27 +182,31 @@ const Questionaire = () => {
         <div className="profile">
           <img className="profile-photo" src={profilePhoto} alt="Profile" />
           <p>{name}</p>
-          <button className="sign-out-button" onClick={signUserOut}>
-            Sign Out
-          </button>
+          <Button variant="contained" onClick={signUserOut}>
+          Sign Out
+</Button>
         </div>
 
         <form className="questionaire-container" onSubmit={createPrompt}>
-          <label htmlFor="Gender">Gender</label>
-          <select
-            id="Gender"
-            name="gender"
-            value={selectedOption}
-            onChange={handleChange}
-          >
-            <option value="">Not Listed</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
+          <InputLabel id="Gender">Gender</InputLabel>
+          <FormControl sx={{ m: 0, minWidth: 215 }} size="small" error>
+            <Select
+              id="gender"
+              value={gender}
+              onChange={handleGenderChange}
+              required
+              error={genderError}
+              helperText={genderError ? "This is a required question" : ""}
+            >
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+          </FormControl>
           <InputLabel id="Weight">Weight (lbs)</InputLabel>
           <TextField
             type="text"
-            id="Weight"
+            id="weight"
             value={weight}
             onChange={handleWeightChange}
             required
@@ -164,7 +218,7 @@ const Questionaire = () => {
 
           <TextField
             type="text"
-            id="Height"
+            id="height"
             value={height}
             onChange={handleHeightChange}
             required
@@ -174,12 +228,14 @@ const Questionaire = () => {
           <InputLabel id="Exercise-Freq">Activity Level</InputLabel>
           <FormControl sx={{ m: 0, minWidth: 215 }} size="small" error>
             <Select
-              id="demo-simple-select-error"
+              id="exercise-freq"
               value={activityLevel}
               onChange={handleActivityLevelChange}
               required
               error={activityLevelError}
-              helperText={weightError ? "Enter between 0 and 1000" : ""}
+              helperText={
+                activityLevelError ? "This is a required question" : ""
+              }
             >
               <MenuItem value="Sedentary: little or no exercise">
                 Sedentary: little or no exercise
@@ -202,27 +258,32 @@ const Questionaire = () => {
             </Select>
           </FormControl>
 
-          <label htmlFor="Fitness-Goal">Fitness Goal</label>
-          <input
-            type="text"
-            id="Fitness-Goal"
-            value={fitnessGoal}
-            onChange={(e) => setFitnessGoal(e.target.value)}
+          <InputLabel id="Fitness-Goal">Fitness Goal</InputLabel>
+          <TextField
+            sx={{ m: 0, minWidth: 400 }}
+            id="fitness-goal"
+            multiline
+            maxRows={4}
+            onChange={handleFitnessGoalChange}
             required
+            error={goalError}
           />
-          <label htmlFor="Medical">Medical Conditions/Injuries</label>
-          <input
-            type="text"
-            id="Medical"
-            value={medicalConditions}
-            onChange={(e) => setMedicalConditions(e.target.value)}
+          <InputLabel id="Medical">Medical Conditions/Injuries</InputLabel>
+          <TextField
+            sx={{ m: 0, minWidth: 400 }}
+            id="medical"
+            multiline
+            maxRows={4}
+            onChange={handleMedicalInjuriesChange}
             required
+            error={medInjuryError}
           />
-          <input type="submit" value="Submit" />
+          <Button type="submit"  variant="contained" >
+  Submit
+</Button>
         </form>
       </div>
       <div>
-
         <h3>Result:</h3>
         <p>{result}</p>
       </div>
