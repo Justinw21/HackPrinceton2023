@@ -177,14 +177,38 @@ const Questionaire = () => {
     }
   };
   const parseResult = async (result) => {
-    let series = result.split("Monday");
+    /*let series = result.split("Monday");
     result.split("Tuesday");
     result.split("Wednesday");
     result.split("Thursday");
     result.split("Friday");
     result.split("Saturday");
     result.split("Sunday");
-    result.split(" - ");
+    result.split(" - ");*/
+    let selected_div = document.querySelector('.results');
+
+    let series = result.split("\n\n");
+    for(let i = 0; i<series.length; i++){
+      series[i].split("-");
+    }
+    //now series should contain the days and workouts
+    var days = document.createElement('ul');
+    days.classList.add('workout-list');
+    selected_div.appendChild(days);
+    
+    for(let j = 0; j < series.length; j++){
+      var each_day= document.createElement('li');
+      each_day.textContent= series[j];
+      console.log(series[j]);
+      selected_div.appendChild(each_day);
+      /*
+      for(let k = 1; k < series[j].length; k++){
+        var each_exercise = document.createElement('input');
+        each_exercise.type = 'checkbox';
+        each_exercise.textContent = series[j][k];
+        selected_div.appendChild(each_exercise);
+      }*/
+    }
   };
 
   return (
@@ -294,7 +318,7 @@ const Questionaire = () => {
 </Button>
         </form>
       </div>
-      <div>
+      <div className="results">
         <h3>Result:</h3>
         <p>{result}</p>
       </div>
