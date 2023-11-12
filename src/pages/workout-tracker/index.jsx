@@ -168,12 +168,23 @@ const Questionaire = () => {
       const exercises = response.data.choices[0].message.content;
       console.log("Exercises:", exercises);
       setResult(exercises);
+      parseResult(exercises);
     } catch (error) {
       console.error(
         "Error calling OpenAI:",
         error.response ? error.response.data : error.message
       );
     }
+  };
+  const parseResult = async (result) => {
+    let series = result.split("Monday");
+    result.split("Tuesday");
+    result.split("Wednesday");
+    result.split("Thursday");
+    result.split("Friday");
+    result.split("Saturday");
+    result.split("Sunday");
+    result.split(" - ");
   };
 
   return (
